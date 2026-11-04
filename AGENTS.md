@@ -1,1 +1,0 @@
-<!-- BEGIN:nextjs-agent-rules -->
