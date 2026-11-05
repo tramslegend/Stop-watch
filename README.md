@@ -1,37 +1,52 @@
-<<<<<<< HEAD
-Learning GitHub achievements!
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⏱️ Stop-watch
 
-## Getting Started
+A minimal, precise stopwatch built with **Next.js 16**, **React 19** and **Tailwind CSS**, with light and dark mode.
 
-First, run the development server:
+## Features
+
+- **Start / Stop / Reset**: a single toggle button plus reset (disabled when there's nothing to reset)
+- **Centisecond precision**: displays `MM:SS.cc`, updated every 10 ms
+- **Drift-free timing**: elapsed time is calculated from `Date.now()` against a start timestamp, not by counting ticks, so it stays accurate even when the browser throttles timers
+- **Pause and resume**: stopping keeps the elapsed time, and starting again continues from where you left off
+- **Dark mode**: follows the system theme via Tailwind's `dark:` variants
+- **Stable layout**: `tabular-nums` monospace digits keep the display from jittering
+
+## Tech stack
+
+| | |
+|---|---|
+| Framework | [Next.js](https://nextjs.org) (App Router) |
+| UI | React, Tailwind CSS v4 |
+| Language | TypeScript |
+| Tooling | ESLint, Turbopack |
+
+## Getting started
 
 ```bash
+git clone https://github.com/tramslegend/Stop-watch.git
+cd Stop-watch
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How it works
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The whole app lives in [`app/page.tsx`](app/page.tsx):
 
-## Learn More
+```ts
+// On start: remember when we started, offset by time already elapsed
+startRef.current = Date.now() - elapsed;
 
-To learn more about Next.js, take a look at the following resources:
+// Every 10 ms: elapsed = now - start (no accumulated drift)
+setElapsed(Date.now() - startRef.current);
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The interval only restarts when `running` toggles, and it's cleared on stop and unmount.
 
 ## Roadmap
 
-- Lap button to record split times
-- Keyboard shortcuts (Space = start/stop)
+- [ ] Lap button to record split times
+- [ ] Keyboard shortcuts (Space = start/stop, R = reset)
+- [ ] Persist state across page reloads
